@@ -1,5 +1,9 @@
 """Short script for gathering statistics from an attendance CSV file."""
 
+import re
+
+#==============================================================================
+
 def report(infile, outfile=None, date=None):
     """report(infile[, outfile][, current])
     
@@ -27,6 +31,44 @@ def report(infile, outfile=None, date=None):
     
     # Read input file
     pass
+
+#==============================================================================
+
+def _date_tuple(strdate):
+    """_date_tuple(strdate)
+
+    Converts a date string of the format "[M]M/[D]D/[YY]YY" into a 3-tuple
+    of month, day, and year integers.
+
+    Positional arguments:
+        strdate (str) - date string of the format "[M]M/[D]D/[YY]YY"
+
+    Returns:
+        tuple ((int, int, int)) - tuple of (month, day, year) integers
+
+    The general input date format should consist of the following, in order:
+        1. 1-2 digits
+        2. a delimeter from the set "/", "\", "-", "_", ".", ",", or whitespace
+        3. 1-2 digits
+        4. another delimeter
+        5. 2 or 4 digits
+    """
+
+    # Split string and verify length
+    s = re.split("[/\\-_., \t]+", strdate)
+    if len(s) != 3:
+        raise ValueError("input date must include 3 delimited numbers")
+
+    # Read the input numbers
+    m = int(s[0])
+    d = int(s[1])
+    y = int(s[2])
+
+    # Add 2000 to a 2-digit year
+    if y < 100:
+        y += 2000
+
+    return (m, d, y)
     
 ### Test code
 report("test.csv")
