@@ -1,5 +1,6 @@
 """Short script for gathering statistics from an attendance CSV file."""
 
+import csv
 import re
 
 #==============================================================================
@@ -28,9 +29,51 @@ def report(infile, outfile=None, date=None):
         - a "Class Date" field in "[M]M/[D]D/[YY]YY" format
         - an "Attendance" field including either "present" or "absent"
     """
+
+    # Initialize column indices
+    namecol = -1 # student name
+    datecol = -1 # date
+    attcol = -1 # attendance status
+
+    # Initialize a set of unique dates, for calculating total class days
+    udates = set()
+
+    # Initialize student dictionary
+    # Indexed by unique student names
+    # Values are lists containing the following in order:
+    #   days counted
+    #   days attended
+    #   last attendance tuple
+    sdic = {}
     
     # Read input file
-    pass
+    with open(infile, 'r') as f:
+        read = csv.reader(f)
+
+        # Loop through rows
+        for row in read:
+            
+            # Look for important columns if not already set
+            if namecol < 0:
+                namecol = row.index("Student Name")
+                datecol = row.index("Class Date")
+                attcol = row.index("Attendance")
+                continue
+
+            # Gather info from the column
+            n = row[namecol] # row's student name
+            d = _date_tuple(row[datecol]) # row's date tuple
+            a = _attendance_code(row[attcol]) # row's attendance code
+
+            # Create row entry for new students
+            if n not in sdic:
+                sdic[n] = [0, 0, (0, 0, 0)]
+
+            # Update row entry for logged students
+            ### increment counted days
+            ### possibly increment attendances
+            ### update latest date if this row is newer
+            ### Add date to unique date set for total class days
 
 #==============================================================================
 
@@ -69,6 +112,63 @@ def _date_tuple(strdate):
         y += 2000
 
     return (m, d, y)
+
+#==============================================================================
+
+def _attendance_code(stratt):
+    """_attendance_code(stratt)
+
+    Converts an attendance string to a standardized numerical code.
+
+    Positional arguments:
+        stratt (str) - attendance string, either "present" or "absent"
+
+    Returns:
+        int - attendance code from the following list
+            -1 - unrecognized
+            0 - absent
+            1 - present
+    """
+
+    if stratt.lower() is "present":
+        return 1
+    elif stratt.lower() is "absent":
+        return 0
+    else:
+        return -1
+
+#==============================================================================
+
+def _later_date(date1, date2):
+    """_later_date(date1, date2)
+
+    Compares two (month, day, year) tuples to see which is later.
+
+    Positional arguments:
+        date1 (tuple) - first date tuple
+        date2 (tuple) - second date tuple
+
+    Returns:
+        bool - True if the first date is later than the second, False otherwise
+    """
+
+    # Compare years
+    if date2[2] > date1[2]:
+        return True
+    elif date2[2] < date1[2]:
+        return False
+    else:
+        # Compare months
+        if date2[0] > date1[0]:
+            return True
+        elif date2[0] < date1[0]:
+            return False
+        else:
+            # Compare days
+            if date2[1] > date1[1]:
+                return True
+            else:
+                return False
     
 ### Test code
 report("test.csv")
