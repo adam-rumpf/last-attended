@@ -6,7 +6,7 @@ import re
 #==============================================================================
 
 def report(infile, outfile=None, date=None):
-    """report(infile[, outfile][, current])
+    """report(infile[, outfile][, date])
     
     Gathers statistics from a specified attendance CSV file and outputs the
     results to another file (or to the shell).
@@ -38,8 +38,7 @@ def report(infile, outfile=None, date=None):
     # Initialize a set of unique dates, for calculating total class days
     udates = set()
 
-    # Initialize student dictionary
-    # Indexed by unique student names
+    # Initialize student dictionary, indexed by student names.
     # Values are lists containing the following in order:
     #   days counted
     #   days attended
@@ -91,7 +90,7 @@ def _date_tuple(strdate):
 
     The general input date format should consist of the following, in order:
         1. 1-2 digits
-        2. a delimeter from the set "/", "\", "-", "_", ".", ",", or whitespace
+        2. a delimeter from the set "/", "\\", "-", "_", ".", ",", or whitespace
         3. 1-2 digits
         4. another delimeter
         5. 2 or 4 digits
