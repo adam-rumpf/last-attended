@@ -20,7 +20,7 @@ def report(infile, outfile=None, date=None):
         date (str) - current date to use for measuring "last attended X days
             ago" reports; options include:
                 "today" - the current date
-                "[M]M/[D]D/[YY]YY" - a specific date
+                "[YY]YY/[M]M/[D]D" - a specific date
                 None - the last date included in the CSV file
     
     This script assumes a few specific aspects of the input CSV file format:
@@ -40,7 +40,6 @@ def report(infile, outfile=None, date=None):
 
     # Initialize student dictionary, indexed by student names.
     # Values are lists containing the following in order:
-    #   days counted
     #   days attended
     #   last attendance tuple
     sdic = {}
@@ -64,29 +63,44 @@ def report(infile, outfile=None, date=None):
             d = _date_tuple(row[datecol]) # row's date tuple
             a = _attendance_code(row[attcol]) # row's attendance code
 
+            # Add date to unique date list
+            udates.add(d)
+
             # Create row entry for new students
             if n not in sdic:
-                sdic[n] = [0, 0, (0, 0, 0)]
+                sdic[n] = [0, (0, 0, 0)]
 
             # Update row entry for logged students
-            ### increment counted days
-            ### possibly increment attendances
-            ### update latest date if this row is newer
-            ### Add date to unique date set for total class days
+            if a > 0:
+                sdic[n][0] += 1
+                if _later_date(d, sdic[n][1]):
+                    sdic[n][1] = d
+
+    # Initialize output string
+    ostring = "Grade Report\n\nName\tRate\tDays Since Attended\n"
+
+    # Report statistics
+    ### Choose whether to print or write to file
+    ### Attendance rate
+    ### Days since last attended
+
+    ### Test code
+    print(sdic)
+    print(len(udates))
 
 #==============================================================================
 
 def _date_tuple(strdate):
     """_date_tuple(strdate)
 
-    Converts a date string of the format "[M]M/[D]D/[YY]YY" into a 3-tuple
+    Converts a date string of the format "[YY]YY/[M]M/[D]D" into a 3-tuple
     of month, day, and year integers.
 
     Positional arguments:
-        strdate (str) - date string of the format "[M]M/[D]D/[YY]YY"
+        strdate (str) - date string of the format "[YY]YY/[M]M/[D]D"
 
     Returns:
-        tuple ((int, int, int)) - tuple of (month, day, year) integers
+        tuple ((int, int, int)) - tuple of (year, month, day) integers
 
     The general input date format should consist of the following, in order:
         1. 1-2 digits
@@ -102,15 +116,15 @@ def _date_tuple(strdate):
         raise ValueError("input date must include 3 delimited numbers")
 
     # Read the input numbers
-    m = int(s[0])
-    d = int(s[1])
-    y = int(s[2])
+    y = int(s[0])
+    m = int(s[1])
+    d = int(s[2])
 
     # Add 2000 to a 2-digit year
     if y < 100:
         y += 2000
 
-    return (m, d, y)
+    return (y, m, d)
 
 #==============================================================================
 
@@ -129,9 +143,9 @@ def _attendance_code(stratt):
             1 - present
     """
 
-    if stratt.lower() is "present":
+    if stratt.lower() == "present":
         return 1
-    elif stratt.lower() is "absent":
+    elif stratt.lower() == "absent":
         return 0
     else:
         return -1
@@ -152,22 +166,22 @@ def _later_date(date1, date2):
     """
 
     # Compare years
-    if date2[2] > date1[2]:
+    if date1[0] > date2[0]:
         return True
-    elif date2[2] < date1[2]:
+    elif date1[0] < date2[0]:
         return False
     else:
         # Compare months
-        if date2[0] > date1[0]:
+        if date1[1] > date2[1]:
             return True
-        elif date2[0] < date1[0]:
+        elif date1[1] < date2[1]:
             return False
         else:
             # Compare days
-            if date2[1] > date1[1]:
+            if date1[2] > date2[2]:
                 return True
             else:
                 return False
     
 ### Test code
-report("test.csv")
+report("mac2312-02.csv")

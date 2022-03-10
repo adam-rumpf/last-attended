@@ -1,6 +1,6 @@
 # Last Attended
 
-<a href="https://github.com/adam-rumpf/last-attended/search?l=python"><img src="https://img.shields.io/badge/language-python-blue?logo=python&logoColor=white"/></a> <a href="https://github.com/adam-rumpf/last-attended/tags"><img src="https://img.shields.io/github/v/tag/adam-rumpf/last-attended?logo=github"></a> <a href="https://github.com/adam-rumpf/last-attended/blob/main/LICENSE"><img src="https://img.shields.io/github/license/adam-rumpf/last-attended"/></a> <a href="https://github.com/adam-rumpf/last-attended/commits/main"><img src="https://img.shields.io/maintenance/no/2022"/></a>
+<a href="https://github.com/adam-rumpf/last-attended/search?l=python"><img src="https://img.shields.io/badge/language-python-blue?logo=python&logoColor=white"/></a> <a href="https://github.com/adam-rumpf/last-attended/tags"><img src="https://img.shields.io/github/v/tag/adam-rumpf/last-attended?logo=github"></a> <a href="https://github.com/adam-rumpf/last-attended/blob/main/LICENSE"><img src="https://img.shields.io/github/license/adam-rumpf/last-attended"/></a> <a href="https://github.com/adam-rumpf/last-attended/commits/main"><img src="https://img.shields.io/maintenance/yes/2022"/></a>
 
 A small Python script to process inconveniently-formatted attendance reports.
 
