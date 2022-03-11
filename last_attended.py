@@ -45,6 +45,7 @@ def report(infile, outfile=None, date=None):
     # Initialize student dictionary, indexed by student names.
     # Values are lists containing the following in order:
     #   days attended
+    #   days counted (for this specific student)
     #   last attendance tuple
     sdic = {}
     
@@ -74,13 +75,14 @@ def report(infile, outfile=None, date=None):
 
             # Create row entry for new students
             if n not in sdic:
-                sdic[n] = [0, (0, 0, 0)]
+                sdic[n] = [0, 0, (0, 0, 0)]
 
             # Update row entry for logged students
+            sdic[n][1] += 1
             if a > 0:
                 sdic[n][0] += 1
-                if _later_date(d, sdic[n][1]):
-                    sdic[n][1] = d
+                if _later_date(d, sdic[n][2]):
+                    sdic[n][2] = d
 
     # Choose reference date (defaults to last recorded date)
     if date == "today":
@@ -90,13 +92,15 @@ def report(infile, outfile=None, date=None):
         rdate = _date_tuple(date)
 
     # Initialize output string
-    ostring = "Grade Report\n\nName\tRate\tDays Since Attended\n"
+    ostring = "Grade Report\n\nName\tAbsences\tRate\tDays Since Attended\n"
 
     # Generate statistics for each student
     for n in sdic:
-        r = sdic[n][0]/len(udates) # attendance rate
-        g = _date_difference(rdate, sdic[n][1]) # days since last attended
-        ostring += f'{n}\t{r:.1%}\t{g}\n'
+        absent = sdic[n][1] - sdic[n][0] # total unexcused absences
+        count = sdic[n][1] # number of days counted
+        ar = sdic[n][0]/sdic[n][1] # attendance rate
+        da = _date_difference(rdate, sdic[n][2]) # days since last attended
+        ostring += f'{n}\t{absent}/{count}\t{ar:.1%}\t{da}\n'
 
     # Write to file or print to screen
     if outfile == None:
