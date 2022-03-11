@@ -79,14 +79,17 @@ def report(infile, outfile=None, date=None):
     # Initialize output string
     ostring = "Grade Report\n\nName\tRate\tDays Since Attended\n"
 
-    # Report statistics
+    # Generate statistics for each student
+    for n in sdic:
+        r = sdic[n][0]/len(udates) # attendance rate
+        g = 0 # days since last attended
+        ostring += f'{n}\t{r:.1%}\t{g}\n'
     ### Choose whether to print or write to file
     ### Attendance rate
     ### Days since last attended
 
     ### Test code
-    print(sdic)
-    print(len(udates))
+    print(ostring)
 
 #==============================================================================
 
